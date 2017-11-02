@@ -7,6 +7,7 @@
 #import "RNNNavigationOptions.h"
 #import "RNNNavigationController.h"
 #import "RNNTabBarController.h"
+#import <React/RCTConvert.h>
 
 @implementation RNNControllerFactory {
 	id<RNNRootViewCreator> _creator;
@@ -102,7 +103,10 @@
 	for (NSDictionary *child in node.children) {
 		UIViewController* childVc = [self fromTree:child];
 		
-		UITabBarItem* item = [[UITabBarItem alloc] initWithTitle:@"A Tab" image:nil tag:1];
+		NSString* title = child[@"children"][0][@"data"][@"navigationOptions"][@"title"] ?: @"A Tab";
+		NSString* iconImagePath = child[@"children"][0][@"data"][@"navigationOptions"][@"tabIcon"] ?: nil;
+		UIImage *iconImage = [RCTConvert UIImage:iconImagePath];
+		UITabBarItem* item = [[UITabBarItem alloc] initWithTitle:title image:iconImage tag:1];
 		[childVc setTabBarItem:item];
 		[controllers addObject:childVc];
 	}
