@@ -23,7 +23,8 @@ public class TopbarContainerView extends LinearLayout implements ContainerViewCo
 	private void initViews() {
 		setOrientation(LinearLayout.VERTICAL);
 		addView(topBar);
-		addView(containerView.asView());
+		addView(containerView.asView(), new ViewGroup.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
 	}
 
 	public TopbarContainerView(Context context) {
