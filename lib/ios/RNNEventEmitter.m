@@ -1,6 +1,9 @@
 #import "RNNEventEmitter.h"
 
-@implementation RNNEventEmitter
+@implementation RNNEventEmitter {
+	NSInteger _appLaunchedListenerCount;
+	BOOL _appLaunchedEventDeferred;
+}
 
 RCT_EXPORT_MODULE();
 
@@ -16,7 +19,11 @@ static NSString* const onNavigationButtonPressed	= @"RNN.navigationButtonPressed
 # pragma mark public
 
 -(void)sendOnAppLaunched {
-	[self send:onAppLaunched body:nil];
+	if (_appLaunchedListenerCount > 0) {
+		[self send:onAppLaunched body:nil];
+	} else {
+		_appLaunchedEventDeferred = TRUE;
+	}
 }
 
 -(void)sendContainerDidAppear:(NSString *)containerId {
@@ -31,10 +38,24 @@ static NSString* const onNavigationButtonPressed	= @"RNN.navigationButtonPressed
 	[self send:onNavigationButtonPressed body:@{@"containerId":containerId , @"buttonId": buttonId }];
 }
 
+- (void)addListener:(NSString *)eventName {
+	[super addListener:eventName];
+	if ([eventName isEqualToString:onAppLaunched]) {
+		_appLaunchedListenerCount++;
+		if (_appLaunchedEventDeferred) {
+			_appLaunchedEventDeferred = FALSE;
+			[self sendOnAppLaunched];
+		}
+	}
+}
+
 # pragma mark private
 
 -(void)send:(NSString *)eventName body:(id)body {
-	[self sendEventWithName:eventName body:body];
+	// TODO This is a quick and dirty fix to issues/#1514.
+	if ([self bridge] != nil) {
+		[self sendEventWithName:eventName body:body];
+	}
 }
 
 @end
