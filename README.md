@@ -2,6 +2,14 @@
 [![Build Status](https://travis-ci.org/wix/react-native-navigation.svg?branch=v2)](https://travis-ci.org/wix/react-native-navigation)
 [![Join us on Discord](https://img.shields.io/badge/discord-react--native--navigation-738bd7.svg?style=flat)](https://discord.gg/DhkZjq2)
 
+# Fork info
+This fork adds support for tab bar item titles and images.
+Just add this in your component:
+static navigationOptions = {
+title: 'More',
+tabIcon: require('../images/icons/tabBarIcon.png'),
+};
+
 #  React Native Navigation v2 (WIP)
 We are rebuilding react-native-navigation.
 
